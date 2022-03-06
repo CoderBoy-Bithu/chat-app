@@ -1,0 +1,43 @@
+<!DOCType html>
+<html>
+
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+</head>
+
+<body>
+
+    <textarea name="" id="chat-log" cols="100" rows="20" readonly></textarea>
+    <br>
+    <input type="text" size="100" id="chat-message-input">
+    <br>
+    <input type="button" value="Send" id="chat-message-submit">
+
+    <script>
+        var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/')
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data)
+            const message = data.msg
+            document.getElementById('chat-log').value += (message + '\n')
+               
+        }
+
+        ws.onclose = function() {
+            
+        }
+
+        document.getElementById('chat-message-submit').onclick = function(event) {
+            const messageInputDom = document.getElementById('chat-message-input')
+            const message = messageInputDom.value
+            ws.send(JSON.stringify({
+                'msg': message
+            }))
+            messageInputDom.value = ''
+        }
+    </script>
+</body>
+
+</html>
