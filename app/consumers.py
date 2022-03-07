@@ -41,17 +41,26 @@ class MyAsyncConsumer(AsyncConsumer):
         await self.channel_layer.group_add(self.group_name,self.channel_name)
     
     async def websocket_receive(self,event):
-        data = json.loads(event['text'])['msg']
+        data = json.loads(event['text'])
         group = await database_sync_to_async(Group.objects.get)(name = self.group_name)
-        chat = Chat(
-            content = data,
+        
+        if self.scope['user'].is_authenticated:
+            chat = Chat(
+            content = data['msg'],
             group = group
-        )
-        await database_sync_to_async(chat.save)()
-        await self.channel_layer.group_send(self.group_name, {
-            'type': 'chat.message',
-            'message': event['text']
-        })
+            )
+            await database_sync_to_async(chat.save)()
+            data['user'] = self.scope['user'].username
+            await self.channel_layer.group_send(self.group_name, {
+                'type': 'chat.message',
+                'message': json.dumps(data)
+            })
+        else:
+            await self.send({
+                'type': 'websocket.send',
+                'text': json.dumps({"msg": "Login Required", "user": "gest"})
+            })
+        
 
     async def chat_message(self,event):
         await self.send({

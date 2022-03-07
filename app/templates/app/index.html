@@ -32,7 +32,7 @@
         ws.onmessage = function(event) {
             const data = JSON.parse(event.data)
             const message = data.msg
-            document.getElementById('chat-log').value += (message + '\n')
+            document.getElementById('chat-log').value += (data.user + ': ' + message + '\n')
                
         }
 
