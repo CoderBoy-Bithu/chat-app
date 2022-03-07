@@ -10,7 +10,11 @@
 <body>
     <h1>GroupName: <span style="color: brown;">{{group_name}}</span></h1>
 
-    <textarea name="" id="chat-log" cols="100" rows="20" readonly></textarea>
+    <textarea name="" id="chat-log" cols="100" rows="20" readonly>
+            {% for chat in chats %}
+                {{chat.content}}
+            {% endfor %}
+    </textarea>
     <br>
     <input type="text" size="100" id="chat-message-input">
     <br>
