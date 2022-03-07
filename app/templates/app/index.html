@@ -8,15 +8,20 @@
 </head>
 
 <body>
+    <h1>GroupName: <span style="color: brown;">{{group_name}}</span></h1>
 
     <textarea name="" id="chat-log" cols="100" rows="20" readonly></textarea>
     <br>
     <input type="text" size="100" id="chat-message-input">
     <br>
-    <input type="button" value="Send" id="chat-message-submit">
-
+    <input type="submit" value="Send" id="chat-message-submit">
+    {{group_name|json_script:"group-name"}}
     <script>
-        var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/')
+        const groupName = JSON.parse(document.getElementById('group-name').textContent)
+        
+        // dynamic ->
+        // var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/') 
+        var ws = new WebSocket(`ws://${window.location.host}/ws/ac/${groupName}/`)
 
         ws.onmessage = function(event) {
             const data = JSON.parse(event.data)
@@ -25,10 +30,7 @@
                
         }
 
-        ws.onclose = function() {
-            
-        }
-
+       
         document.getElementById('chat-message-submit').onclick = function(event) {
             const messageInputDom = document.getElementById('chat-message-input')
             const message = messageInputDom.value
