@@ -19,8 +19,10 @@
     <script>
         const groupName = JSON.parse(document.getElementById('group-name').textContent)
         
-        // dynamic ->
+        // static ->
         // var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/') 
+
+        // dynamic ->
         var ws = new WebSocket(`ws://${window.location.host}/ws/ac/${groupName}/`)
 
         ws.onmessage = function(event) {
